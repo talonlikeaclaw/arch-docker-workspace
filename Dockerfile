@@ -1,22 +1,22 @@
-FROM archlinux:latest
+FROM debian:latest
 
 # Update and install applications
-RUN pacman -Sy --noconfirm archlinux-keyring && \
-    pacman -Syu --noconfirm && \
-    pacman -S --noconfirm --needed \
+RUN apt update && apt upgrade -y
+
+RUN apt install -y \
     zsh \
+    gpg \
     git \
-    lazygit \
     neovim \
     ranger \
     tmux \
-    python \
-    python-pip \
-    python-virtualenv \
+    python3 \
+    python3-pip \
+    python3-venv \
     nodejs \
     npm \
     ripgrep \
-    fd \
+    fd-find \
     fzf \
     htop \
     tldr \
@@ -26,19 +26,23 @@ RUN pacman -Sy --noconfirm archlinux-keyring && \
     wget \
     unzip \
     exa \
-    starship \
-    zoxide
+    tree \
+    zoxide \
+    sudo
+
+RUN curl -Lo /usr/local/bin/lazygit https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_linux_$(dpkg --print-architecture) && \
+    chmod +x /usr/local/bin/lazygit
+
+RUN curl -sS https://starship.rs/install.sh | sh -s -- -y
 
 # Create developer user
-RUN useradd -m -s /bin/zsh developer && \
-    mkdir -p /etc/sudoers.d && \
-    echo "developer ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/developer
+RUN useradd -m -s /bin/zsh -G sudo developer && \
+    mkdir -p /etc/sudoers.d/ && \
+    echo "developer ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/developer && \
+    chmod 0440 /etc/sudoers.d/developer
 
 USER developer
 WORKDIR /home/developer
-
-# Update TLDR
-RUN tldr --update
 
 # Install Tmux Plugin Manager (TPM)
 RUN git clone https://github.com/tmux-plugins/tpm /home/developer/.tmux/plugins/tpm
@@ -49,7 +53,7 @@ RUN mkdir -p /home/developer/.config /home/developer/.venvs /home/developer/.loc
 # Copy dotfiles if available
 COPY --chown=developer:developer container-dotfiles/.zshrc /home/developer/
 COPY --chown=developer:developer container-dotfiles/.tmux.conf* /home/developer/
-COPY --chown=developer:developer container-dotfiles/.config/ /home/developer/.config.
+COPY --chown=developer:developer container-dotfiles/.config/ /home/developer/.config/
 
 # Ensure correct file permissions
 RUN chown -R developer:developer /home/developer
