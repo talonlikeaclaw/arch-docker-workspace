@@ -40,6 +40,8 @@ RUN mkdir -p /home/developer/.config && \
     mkdir -p /home/developer/.venvs && \
     mkdir -p /home/developer/.local/bin
 
+RUN git clone https://github.com/tmux-plugins/tpm /home/developer/.tmux/plugins/tpm
+
 COPY --chown=developer:developer container-dotfiles/.zshrc /home/developer/
 COPY --chown=developer:developer container-dotfiles/.tmux.conf /home/developer/ || true
 COPY --chown=developer:developer container-dotfiles/.config /home/developer/.config/ || true
