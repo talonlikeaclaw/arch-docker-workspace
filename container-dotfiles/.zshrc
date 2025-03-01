@@ -61,9 +61,6 @@ ZSH_TMUX_AUTOCONNECT=true
 ZSH_TMUX_AUTOQUIT=false
 ZSH_TMUX_DEFAULT_SESSION_NAME="dev-container"
 
-# Configure ssh-agent
-zstyle ':omz:plugins:ssh-agent' agent-forwarding 'yes'
-
 # Load Oh My Zsh
 source $ZSH/oh-my-zsh.sh
 
@@ -72,6 +69,9 @@ alias c='clear'
 alias cat='bat -p'
 alias can='bat'
 alias lg='lazygit'
+alias ls='exa'
+alias l='exa -l'
+alias la='exa -la'
 alias n='clear ; neofetch'
 alias py='python3'
 alias size="du -sh"
